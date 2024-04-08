@@ -7,6 +7,12 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const mongoose = require('mongoose');
+main().catch(err => console.log(err));
+async function main() {
+  await mongoose.connect(process.env.CONNECTION_STRING);
+}
+
 var app = express();
 
 // view engine setup
