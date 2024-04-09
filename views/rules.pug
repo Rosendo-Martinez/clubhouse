@@ -1,0 +1,42 @@
+extends layout 
+
+block content
+
+
+    div(class="container-lg")
+
+        nav(class="bg-dark navbar")
+            div(class="container-fluid d-flex justify-content-between")
+                div
+                    a(class="navbar-brand" href="#")
+                        i(class="bi bi-house-lock-fill text-light")
+                        span(class="text-warning ms-2") ClubHouse
+                div 
+                    a(class="btn btn-primary" href="/clubhouse/sign-up") Sign Up 
+                    a(class="btn btn-primary ms-2" href="/clubhouse/sign-in") Sign In 
+
+        h1 A clubhouse for #[span(class="text-warning") members only]
+
+        div(class="ms-3 my-5")
+
+            h2(class="h3 my-3") Member Tiers 
+
+            p(class="lead ms-3 text-info") No Account 
+            
+            p(class="ms-5") Users with no registered account will be denied access to the clubhouse.
+
+            p(class="lead ms-3 text-info") Non-Trusted Users 
+
+            p(class="ms-5") Users who have a registered account but who do not know the secret clubhouse password. These users get to view posts, and users. However, they can not post, and can not view a post's author.
+
+            p(class="lead ms-3 text-info") Trusted Users 
+
+            p(class="ms-5") Users who have a registered account and know the secret clubhouse password. These users get to view posts, users, a post's author, and can create posts.
+
+            p(class="lead ms-3 text-info") Admin
+
+            p(class="ms-5") Trusted users who know the even secreter admin clubhouse password. These users have same privlages as Trusted Users, but also have the power to delete posts.
+        
+        div(class="d-flex justify-content-center")
+            p Developed by #[a(href="https://github.com/Rosendo-Martinez") R. Martinez]
+            

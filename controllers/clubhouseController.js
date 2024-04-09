@@ -1,7 +1,9 @@
 const asyncHandler = require("express-async-handler");
 
 exports.rules = asyncHandler(async (req, res, next) => {
-    res.send('Rules not implemented.')
+    res.render('rules', {
+        title: 'ClubHouse Rules'
+    });
 })
 
 exports.sign_in_get = asyncHandler(async (req, res, next) => {
