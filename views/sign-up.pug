@@ -1,0 +1,44 @@
+extends layout 
+
+block content 
+
+    div(class="container-sm" style="max-width: 750px;")
+
+        h1(class="text-info") Create Account 
+
+        form(action="POST")
+
+            div(class="mb-3")
+                label(for="username" class="form-label") Username 
+                input(type="text" class="form-control" id="username" name="username" required placeholder="your username here")
+            
+            div(class="mb-3")
+                label(for="email" class="form-label") Email
+                input(type="email" class="form-control" id="email" name="email" required placeholder="example@gmail.com")
+            
+            div(class="mb-3")
+                label(for="password" class="form-label") Password
+                input(type="password" class="form-control" id="password" name="password" required placeholder="password")
+
+            div(class="mb-3")
+                label(for="description") Description 
+                textarea(class="form-control" rows="4" name="description" placeholder="Short introduction of yourself..." required)
+
+            div(class="mb-3")
+                label(for="iconCharacters" class="form-label") Icon Characters
+                input(type="text" class="form-control" id="iconCharacters" name="password" required minLength="1" maxLength="2" placeholder="the characters shown in your icon")
+            
+            div(class="mb-3")
+                label(for="iconColor" class="form-label") Icon Color
+                select(class="form-select" id="iconColor" required)
+                    option(value="" disabled hidden selected) -- Select --
+                    option(value="#428bca") Blue
+                    option(value="#5bc0de") Light Blue
+                    option(value="#d9534f") Red
+                    option(value="#5cb85c") Green
+
+            button(class="btn btn-primary" type="submit") Submit
+
+
+
+    

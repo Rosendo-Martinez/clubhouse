@@ -15,7 +15,9 @@ exports.sign_in_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.sign_up_get = asyncHandler(async (req, res, next) => {
-    res.send('Sign up GET not implemented.')
+    res.render('sign-up', {
+        title: 'Sign Up'
+    })
 })
 
 exports.sign_up_post = asyncHandler(async (req, res, next) => {
