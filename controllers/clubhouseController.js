@@ -3,6 +3,31 @@ const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
 const bcrypt = require('bcryptjs');
 
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
+
+passport.use(new LocalStrategy(
+    {
+        usernameField: 'email',
+    },
+    async function verify(email, password, cb) {
+    try {
+        const user = await User.findOne({ email: email }).exec();
+        if (user===null) {
+            return cb(null, false, { message: 'Email is incorrect.'}) // no user found w/ given email
+        } else {
+            const passwordMatched = await bcrypt.compare(password, user.hashedPassword);
+            if (passwordMatched) {
+                return cb(null, user)
+            } else {
+                return cb(null, false, { message: 'Password and/or email is incorrect.'})
+            }
+        }
+    } catch (err) {
+        cb(err)
+    }
+}));
+
 exports.rules = asyncHandler(async (req, res, next) => {
     res.render('rules', {
         title: 'ClubHouse Rules'
@@ -15,9 +40,20 @@ exports.sign_in_get = asyncHandler(async (req, res, next) => {
     })
 })
 
-exports.sign_in_post = asyncHandler(async (req, res, next) => {
-    res.send('Sign in POST not implemented.')
-})
+exports.sign_in_post = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err); // handle error
+    }
+    if (!user) {
+      // Authentication failed
+      return res.status(401).render('sign-in', {
+        error: info.message
+      });
+    }
+    return res.redirect('/clubhouse/posts');
+  })(req, res, next); // Note: This is immediately invoked.
+}
 
 exports.sign_up_get = asyncHandler(async (req, res, next) => {
     res.render('sign-up', {
