@@ -1,0 +1,18 @@
+extends layout 
+
+block content 
+
+    div(class="container-sm" style="max-width: 750px;")
+
+        h1(class="text-info") Sign In
+
+        form(method="POST")
+
+            div(class="mb-3")
+                label(for="email" class="form-label") Email
+                input(type="email" class="form-control" id="email" name="email" required placeholder="example@gmail.com")
+
+            div(class="mb-3")
+                label(for="password" class="form-label") Password
+                input(type="password" class="form-control" id="password" name="password" required placeholder="password")
+                

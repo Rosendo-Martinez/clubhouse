@@ -10,7 +10,9 @@ exports.rules = asyncHandler(async (req, res, next) => {
 })
 
 exports.sign_in_get = asyncHandler(async (req, res, next) => {
-    res.send('Sign in GET not implemented.')
+    res.render('sign-in', {
+        title: 'Sign In'
+    })
 })
 
 exports.sign_in_post = asyncHandler(async (req, res, next) => {
