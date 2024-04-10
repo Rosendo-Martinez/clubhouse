@@ -6,15 +6,15 @@ block content
 
         h1(class="text-info") Create Account 
 
-        form(action="POST")
+        form(method="POST")
 
             div(class="mb-3")
                 label(for="username" class="form-label") Username 
-                input(type="text" class="form-control" id="username" name="username" required placeholder="your username here")
+                input(type="text" class="form-control" id="username" name="username" required placeholder="your username here" value=(undefined===user ? '' : user.username))
             
             div(class="mb-3")
                 label(for="email" class="form-label") Email
-                input(type="email" class="form-control" id="email" name="email" required placeholder="example@gmail.com")
+                input(type="email" class="form-control" id="email" name="email" required placeholder="example@gmail.com" value=(undefined===user ? '' : user.email))
             
             div(class="mb-3")
                 label(for="password" class="form-label") Password
@@ -22,22 +22,28 @@ block content
 
             div(class="mb-3")
                 label(for="description") Description 
-                textarea(class="form-control" rows="4" name="description" placeholder="Short introduction of yourself..." required)
+                textarea(class="form-control" rows="4" id="description" name="description" placeholder="Short introduction of yourself..." required) #{undefined===user ? '' : user.description}
 
             div(class="mb-3")
                 label(for="iconCharacters" class="form-label") Icon Characters
-                input(type="text" class="form-control" id="iconCharacters" name="password" required minLength="1" maxLength="2" placeholder="the characters shown in your icon")
+                input(type="text" class="form-control" id="iconCharacters" name="iconCharacters" required minLength="1" maxLength="2" placeholder="the characters shown in your icon" value=(undefined===user ? '' : user.iconCharacters))
             
             div(class="mb-3")
                 label(for="iconColor" class="form-label") Icon Color
-                select(class="form-select" id="iconColor" required)
-                    option(value="" disabled hidden selected) -- Select --
+                select(class="form-select" id="iconColor" name="iconColor" required value=(undefined===user ? '' : user.iconColor))
+                    option(value="" disabled hidden selected=(undefined===user)) -- Select --
                     option(value="#428bca") Blue
                     option(value="#5bc0de") Light Blue
                     option(value="#d9534f") Red
                     option(value="#5cb85c") Green
 
             button(class="btn btn-primary" type="submit") Submit
+
+        if error_list
+            ul(class="list-group")
+                each error in error_list 
+                    li(class="list-group-item list-group-item-warning") #{error.msg}
+
 
 
 

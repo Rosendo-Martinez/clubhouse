@@ -1,4 +1,7 @@
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
+const User = require("../models/user");
+const bcrypt = require('bcryptjs');
 
 exports.rules = asyncHandler(async (req, res, next) => {
     res.render('rules', {
@@ -20,9 +23,92 @@ exports.sign_up_get = asyncHandler(async (req, res, next) => {
     })
 })
 
-exports.sign_up_post = asyncHandler(async (req, res, next) => {
-    res.send('Sign up POST not implemented.')
-})
+exports.sign_up_post = [
+    body('username')
+        .trim()
+        .not().matches(/[<>&'"/]/, 'g')
+        .withMessage('Username must not contain <, >, &, \', ", or / characters')
+        .isLength({ min: 3 })
+        .withMessage("Username must be minimum of 3 characters.")
+        .isLength({ max: 12 })
+        .withMessage("Username must be maximum of 12 characters.")
+        .custom(async username => {
+            const userWithUsername = await User.findOne({ username: username }).exec();
+
+            if (userWithUsername) {
+                throw new Error();
+            }
+        })
+        .withMessage("Username is already registered with another account."),
+    body('email')
+        .trim()
+        .not().matches(/[<>&'"/]/, 'g')
+        .withMessage('Email must not contain <, >, &, \', ", or / characters')
+        .isEmail()
+        .withMessage('Email must be valid email.')
+        .custom(async email => {
+            const userWithEmail = await User.findOne({ email: email }).exec();
+
+            if (userWithEmail) {
+                throw new Error();
+            }
+        })
+        .withMessage("Email is already registered with another account."),
+    body('password')
+        .trim()
+        .isLength({ min: 4 })
+        .withMessage("Password must be minimum of 4 characters.")
+        .isLength({ max: 10 })
+        .withMessage("Password must be maximum of 10 characters.")
+        .customSanitizer(async password => {
+            const SALT_LENGTH = 10;
+            const salt = await bcrypt.genSalt(SALT_LENGTH);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            return hashedPassword;
+        }),
+    body('description')
+        .trim()
+        .escape(),
+    body('iconCharacters')
+        .trim()
+        .not().matches(/[<>&'"/]/, 'g')
+        .withMessage('Icon character(s) must not contain <, >, &, \', ", or / characters')
+        .isLength({ min: 1 })
+        .withMessage("Icon character(s) must be minimum of 1 character.")
+        .isLength({ max: 2 })
+        .withMessage("Icon character(s) must be maximum of 2 characters."),
+    body('iconColor')
+        .trim()
+        .notEmpty()
+        .withMessage('Color is required.'),
+    
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+
+        const user = new User({
+            username: req.body.username,
+            email: req.body.email,
+            hashedPassword: req.body.password,
+            description: req.body.description,
+            iconCharacters: req.body.iconCharacters,
+            iconColor: req.body.iconColor
+        })
+
+        if (!errors.isEmpty()) {
+            res.render('sign-up', {
+                title: 'Sign Up',
+                user: user,
+                error_list: errors.array()
+            })
+            return;
+        } else {
+            await user.save();
+
+            res.redirect('/clubhouse/posts');
+        }
+    })
+]
 
 exports.posts = asyncHandler(async (req, res, next) => {
     res.send('Posts not implemented.')
