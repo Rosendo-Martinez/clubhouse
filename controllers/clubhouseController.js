@@ -11,6 +11,10 @@ exports.rules = asyncHandler(async (req, res, next) => {
 })
 
 exports.sign_in_get = asyncHandler(async (req, res, next) => {
+    if (req.user !== undefined) {
+        return res.redirect('/clubhouse/posts');
+    }
+    
     res.render('sign-in', {
         title: 'Sign In'
     })
@@ -38,6 +42,10 @@ exports.sign_in_post = (req, res, next) => {
 }
 
 exports.sign_up_get = asyncHandler(async (req, res, next) => {
+    if (req.user !== undefined) {
+        return res.redirect('/clubhouse/posts');
+    }
+
     res.render('sign-up', {
         title: 'Sign Up'
     })
@@ -131,7 +139,9 @@ exports.sign_up_post = [
 ]
 
 exports.posts = asyncHandler(async (req, res, next) => {
-    res.send(`Posts not implemented. UserID: ${req.user}`)
+    res.render('posts', {
+        title: 'Posts'
+    })
 })
 
 exports.posts_create_get = asyncHandler(async (req, res, next) => {
