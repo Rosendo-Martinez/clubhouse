@@ -37,14 +37,9 @@ block content
                     option(value="#d9534f") Red
                     option(value="#5cb85c") Green
 
-            button(class="btn btn-primary" type="submit") Submit
+            button(class="btn btn-primary my-3" type="submit") Submit
 
         if error_list
             ul(class="list-group")
                 each error in error_list 
-                    li(class="list-group-item list-group-item-warning") #{error.msg}
-
-
-
-
-    
+                    li(class="list-group-item list-group-item-warning my-2") #{error.msg}
