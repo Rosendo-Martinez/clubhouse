@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const passport = require('../passport-config');
+const bcrypt = require('bcryptjs');
+const User = require('../models/user');
 
 exports.rules = asyncHandler(async (req, res, next) => {
     res.render('rules', {
