@@ -1,32 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const User = require("../models/user");
-const bcrypt = require('bcryptjs');
-
-var passport = require('passport');
-var LocalStrategy = require('passport-local');
-
-passport.use(new LocalStrategy(
-    {
-        usernameField: 'email',
-    },
-    async function verify(email, password, cb) {
-    try {
-        const user = await User.findOne({ email: email }).exec();
-        if (user===null) {
-            return cb(null, false, { message: 'Email is incorrect.'}) // no user found w/ given email
-        } else {
-            const passwordMatched = await bcrypt.compare(password, user.hashedPassword);
-            if (passwordMatched) {
-                return cb(null, user)
-            } else {
-                return cb(null, false, { message: 'Password and/or email is incorrect.'})
-            }
-        }
-    } catch (err) {
-        cb(err)
-    }
-}));
+const passport = require('../passport-config');
 
 exports.rules = asyncHandler(async (req, res, next) => {
     res.render('rules', {
@@ -51,7 +25,13 @@ exports.sign_in_post = (req, res, next) => {
         error: info.message
       });
     }
-    return res.redirect('/clubhouse/posts');
+    req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          return next(loginErr); // handle login error
+        }
+        // Successfully authenticated
+        return res.redirect('/clubhouse/posts');
+    });
   })(req, res, next); // Note: This is immediately invoked.
 }
 
@@ -149,7 +129,7 @@ exports.sign_up_post = [
 ]
 
 exports.posts = asyncHandler(async (req, res, next) => {
-    res.send('Posts not implemented.')
+    res.send(`Posts not implemented. UserID: ${req.user}`)
 })
 
 exports.posts_create_get = asyncHandler(async (req, res, next) => {
