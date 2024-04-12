@@ -169,7 +169,17 @@ exports.users_detail = asyncHandler(async (req, res, next) => {
 })
 
 exports.account_get = asyncHandler(async (req, res, next) => {
-    res.send('Account GET not implemented.')
+    if (req.user === undefined) {
+        return res.redirect('/clubhouse/sign-in');
+    }
+
+    const users = await User.find({ _id: { $ne: req.user._id} }).exec();
+
+    res.render('account', {
+        title: 'Account',
+        user: req.user,
+        user_list: users
+    });
 })
 
 exports.account_post = asyncHandler(async (req, res, next) => {
