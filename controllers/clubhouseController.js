@@ -139,9 +139,17 @@ exports.sign_up_post = [
 ]
 
 exports.posts = asyncHandler(async (req, res, next) => {
+    if (req.user === undefined) {
+        return res.redirect('/clubhouse/sign-in');
+    }
+
+    const users = await User.find({ _id: { $ne: req.user._id} }).exec();
+
     res.render('posts', {
-        title: 'Posts'
-    })
+        title: 'Posts',
+        user: req.user,
+        user_list: users
+    });
 })
 
 exports.posts_create_get = asyncHandler(async (req, res, next) => {

@@ -14,4 +14,8 @@ const UserSchema = new Schema({
     iconColor: { type: String, required: true }
 });
 
+UserSchema.virtual('url').get(function() {
+    return `/clubhouse/users/${this._id}`;
+});
+
 module.exports = mongoose.model("User", UserSchema);
