@@ -182,9 +182,79 @@ exports.account_get = asyncHandler(async (req, res, next) => {
     });
 })
 
-exports.account_post = asyncHandler(async (req, res, next) => {
-    res.send('Account POST not implemented.')
-})
+exports.account_post = [
+    body('username')
+        .trim()
+        .not().matches(/[<>&'"/]/, 'g')
+        .withMessage('Username must not contain <, >, &, \', ", or / characters')
+        .isLength({ min: 3 })
+        .withMessage("Username must be minimum of 3 characters.")
+        .isLength({ max: 12 })
+        .withMessage("Username must be maximum of 12 characters.")
+        .custom(async (username, { req }) => {
+            // Finds user, exluding the current authinticated user, with the given username
+            const userWithUsername = await User.findOne({ username: username, _id: { $ne: req.user._id} }).exec();
+
+            if (userWithUsername) {
+                throw new Error();
+            }
+        })
+        .withMessage("Username is already registered with another account."),
+    body('password')
+        .optional({ checkFalsy: true }) // skips validation if password is blank
+        .isLength({ min: 4 })
+        .withMessage("Password must be minimum of 4 characters.")
+        .isLength({ max: 10 })
+        .withMessage("Password must be maximum of 10 characters.")
+        .customSanitizer(async password => {
+            const SALT_LENGTH = 10;
+            const salt = await bcrypt.genSalt(SALT_LENGTH);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            return hashedPassword;
+        }),
+    body('description')
+        .trim()
+        .escape(),
+    body('iconCharacters')
+        .trim()
+        .not().matches(/[<>&'"/]/, 'g')
+        .withMessage('Icon character(s) must not contain <, >, &, \', ", or / characters')
+        .isLength({ min: 1 })
+        .withMessage("Icon character(s) must be minimum of 1 character.")
+        .isLength({ max: 2 })
+        .withMessage("Icon character(s) must be maximum of 2 characters."),
+    body('iconColor')
+        .trim()
+        .notEmpty()
+        .withMessage('Color is required.'),
+
+    asyncHandler(async (req, res, next) => { 
+        const errors = validationResult(req);
+
+        const userUpdates = {
+            username: req.body.username,
+            hashedPassword: req.body.password ? req.body.password : req.user.hashedPassword,
+            description: req.body.description,
+            iconCharacters: req.body.iconCharacters,
+            iconColor: req.body.iconColor,
+        };
+
+        if (!errors.isEmpty()) {
+            return res.render('account', {
+                title: 'Account',
+                user: req.user,
+                user_updates: userUpdates,
+                user_list: [],
+                error_list: errors.array()
+            });
+        } else {
+            await User.findByIdAndUpdate(req.user._id, userUpdates);
+
+            return res.redirect('/clubhouse/account');
+        }
+    })
+]
 
 exports.privalage_get = asyncHandler(async (req, res, next) => {
     res.send('Privalage GET not implemented.')
