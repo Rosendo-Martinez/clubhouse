@@ -4,6 +4,21 @@ const passport = require('../passport-config');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
+async function addUserListToLocals(req, res, next) {
+    // To Do: move this out to its own middleware
+    if (req.user === undefined) {
+        return res.redirect('/clubhouse/sign-in');
+    }
+
+    try {
+        const users = await User.find({ _id: { $ne: req.user._id} }).exec();
+        res.locals.user_list = users;
+        next()
+    } catch (error) {
+        next(error);
+    }
+}
+
 exports.rules = asyncHandler(async (req, res, next) => {
     res.render('rules', {
         title: 'ClubHouse Rules'
@@ -141,49 +156,51 @@ exports.sign_up_post = [
     })
 ]
 
-exports.posts = asyncHandler(async (req, res, next) => {
-    if (req.user === undefined) {
-        return res.redirect('/clubhouse/sign-in');
-    }
+exports.posts = [
+    addUserListToLocals,
+    asyncHandler(async (req, res, next) => {
+        res.render('posts', {
+            title: 'Posts',
+            user: req.user,
+        });
+    })
+]
 
-    const users = await User.find({ _id: { $ne: req.user._id} }).exec();
-
-    res.render('posts', {
-        title: 'Posts',
-        user: req.user,
-        user_list: users
-    });
-})
-
-exports.posts_create_get = asyncHandler(async (req, res, next) => {
-    res.send('Posts create GET not implemented.')
-})
+exports.posts_create_get = [
+    addUserListToLocals,
+    asyncHandler(async (req, res, next) => {
+        res.send('Posts create GET not implemented.')
+    })
+]
 
 exports.posts_create_post = asyncHandler(async (req, res, next) => {
     res.send('Posts create POSTS not implemented.')
 })
 
-exports.posts_detail = asyncHandler(async (req, res, next) => {
-    res.send(`Posts detail not implemented. Post ID: ${req.params.id}`)
-})
+exports.posts_detail = [
+    addUserListToLocals,
+    asyncHandler(async (req, res, next) => {
+        res.send(`Posts detail not implemented. Post ID: ${req.params.id}`)
+    })
+]
 
-exports.users_detail = asyncHandler(async (req, res, next) => {
-    res.send(`Users detail not implemented. User ID: ${req.params.id}`)
-})
+exports.users_detail = [
+    addUserListToLocals,
+    asyncHandler(async (req, res, next) => {
+        res.send(`Users detail not implemented. User ID: ${req.params.id}`)
+    })
+]
 
-exports.account_get = asyncHandler(async (req, res, next) => {
-    if (req.user === undefined) {
-        return res.redirect('/clubhouse/sign-in');
-    }
+exports.account_get = [
+    addUserListToLocals,
+    asyncHandler(async (req, res, next) => {
 
-    const users = await User.find({ _id: { $ne: req.user._id} }).exec();
-
-    res.render('account', {
-        title: 'Account',
-        user: req.user,
-        user_list: users
-    });
-})
+        res.render('account', {
+            title: 'Account',
+            user: req.user,
+        });
+    })
+]
 
 exports.account_post = [
     body('username')
@@ -259,9 +276,12 @@ exports.account_post = [
     })
 ]
 
-exports.privalage_get = asyncHandler(async (req, res, next) => {
-    res.send('Privalage GET not implemented.')
-})
+exports.privalage_get = [
+    addUserListToLocals,
+    asyncHandler(async (req, res, next) => {
+        res.send('Privalage GET not implemented.')
+    })
+]
 
 exports.privalage_post = asyncHandler(async (req, res, next) => {
     res.send('Privalage POST not implemented.')
