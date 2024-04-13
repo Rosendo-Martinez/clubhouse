@@ -4,6 +4,7 @@ const passport = require('../passport-config');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const user = require("../models/user");
+const { Admin, TrustedUser } = require('../classes/Passwords');
 
 async function checkThatUserIsAuthinticated(req, res, next) {
     if (req.user === undefined) {
@@ -298,6 +299,31 @@ exports.privilege_get = [
     })
 ]
 
-exports.privilege_post = asyncHandler(async (req, res, next) => {
-    res.send('Privilege POST not implemented.')
-})
+exports.privilege_post = [
+    checkThatUserIsAuthinticated,
+    addLocalsForAuthinticatedViews, // Locals are ONLY USED when the view needs to be rerendered
+    asyncHandler(async (req, res, next) => {
+
+        let isGuessCorrect;
+        if (req.body.privilege === "trust") {
+            isGuessCorrect = TrustedUser.guessPassword(req.body.password);
+        } else {
+            isGuessCorrect = Admin.guessPassword(req.body.password);
+        }
+
+        if (isGuessCorrect) {
+            if (req.body.privilege === "trust") {
+                req.user.isTrusted = true;
+            } else {
+                req.user.isAdmin = true;
+            }
+            await req.user.save();
+            res.redirect('/clubhouse/account');
+        } else {
+            res.render('privilege', {
+                privilege: req.body.privilege,
+                error: `The password you entered is incorrect! You are denied ${req.body.privilege} privilege.`
+            })
+        }
+    })
+]
