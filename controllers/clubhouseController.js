@@ -12,10 +12,11 @@ async function checkThatUserIsAuthinticated(req, res, next) {
     }
 }
 
-async function addUserListToLocals(req, res, next) {
+async function addLocalsForAuthinticatedViews(req, res, next) {
     try {
         const users = await User.find({ _id: { $ne: req.user._id} }).exec();
         res.locals.user_list = users;
+        res.locals.user = req.user;
         next()
     } catch (error) {
         next(error);
@@ -161,18 +162,17 @@ exports.sign_up_post = [
 
 exports.posts = [
     checkThatUserIsAuthinticated,
-    addUserListToLocals,
+    addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
         res.render('posts', {
             title: 'Posts',
-            user: req.user,
         });
     })
 ]
 
 exports.posts_create_get = [
     checkThatUserIsAuthinticated,
-    addUserListToLocals,
+    addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
         res.send('Posts create GET not implemented.')
     })
@@ -184,7 +184,7 @@ exports.posts_create_post = asyncHandler(async (req, res, next) => {
 
 exports.posts_detail = [
     checkThatUserIsAuthinticated,
-    addUserListToLocals,
+    addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
         res.send(`Posts detail not implemented. Post ID: ${req.params.id}`)
     })
@@ -192,7 +192,7 @@ exports.posts_detail = [
 
 exports.users_detail = [
     checkThatUserIsAuthinticated,
-    addUserListToLocals,
+    addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
         res.send(`Users detail not implemented. User ID: ${req.params.id}`)
     })
@@ -200,12 +200,11 @@ exports.users_detail = [
 
 exports.account_get = [
     checkThatUserIsAuthinticated,
-    addUserListToLocals,
+    addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
 
         res.render('account', {
             title: 'Account',
-            user: req.user,
         });
     })
 ]
@@ -286,7 +285,7 @@ exports.account_post = [
 
 exports.privalage_get = [
     checkThatUserIsAuthinticated,
-    addUserListToLocals,
+    addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
         res.send('Privalage GET not implemented.')
     })
