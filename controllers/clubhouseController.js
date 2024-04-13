@@ -4,12 +4,15 @@ const passport = require('../passport-config');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
-async function addUserListToLocals(req, res, next) {
-    // To Do: move this out to its own middleware
+async function checkThatUserIsAuthinticated(req, res, next) {
     if (req.user === undefined) {
-        return res.redirect('/clubhouse/sign-in');
+        res.redirect('/clubhouse/sign-in');
+    } else {
+        next();
     }
+}
 
+async function addUserListToLocals(req, res, next) {
     try {
         const users = await User.find({ _id: { $ne: req.user._id} }).exec();
         res.locals.user_list = users;
@@ -157,6 +160,7 @@ exports.sign_up_post = [
 ]
 
 exports.posts = [
+    checkThatUserIsAuthinticated,
     addUserListToLocals,
     asyncHandler(async (req, res, next) => {
         res.render('posts', {
@@ -167,6 +171,7 @@ exports.posts = [
 ]
 
 exports.posts_create_get = [
+    checkThatUserIsAuthinticated,
     addUserListToLocals,
     asyncHandler(async (req, res, next) => {
         res.send('Posts create GET not implemented.')
@@ -178,6 +183,7 @@ exports.posts_create_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.posts_detail = [
+    checkThatUserIsAuthinticated,
     addUserListToLocals,
     asyncHandler(async (req, res, next) => {
         res.send(`Posts detail not implemented. Post ID: ${req.params.id}`)
@@ -185,6 +191,7 @@ exports.posts_detail = [
 ]
 
 exports.users_detail = [
+    checkThatUserIsAuthinticated,
     addUserListToLocals,
     asyncHandler(async (req, res, next) => {
         res.send(`Users detail not implemented. User ID: ${req.params.id}`)
@@ -192,6 +199,7 @@ exports.users_detail = [
 ]
 
 exports.account_get = [
+    checkThatUserIsAuthinticated,
     addUserListToLocals,
     asyncHandler(async (req, res, next) => {
 
@@ -277,6 +285,7 @@ exports.account_post = [
 ]
 
 exports.privalage_get = [
+    checkThatUserIsAuthinticated,
     addUserListToLocals,
     asyncHandler(async (req, res, next) => {
         res.send('Privalage GET not implemented.')
