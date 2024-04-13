@@ -40,11 +40,11 @@ block content
             div(class="mb-3")
                 div(class="form-check form-check-inline")
                     label(class="form-check-label text-warning" for="isTrusted") #[strong Trusted]
-                    input(class="form-check-input" type="checkbox" id="isTrusted" disabled checked)
+                    input(class="form-check-input" type="checkbox" id="isTrusted" disabled checked=(user.isTrusted))
 
                 div(class="form-check form-check-inline")
                     label(class="form-check-label text-warning" for="isAdmin") #[strong Admin]
-                    input(class="form-check-input" type="checkbox" id="isTrusted" disabled)
+                    input(class="form-check-input" type="checkbox" id="isTrusted" disabled checked=(user.isAdmin))
 
             button(class="btn btn-primary my-3" type="submit") Update
 
