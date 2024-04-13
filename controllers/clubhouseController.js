@@ -133,7 +133,10 @@ exports.sign_up_post = [
         } else {
             await user.save();
 
-            res.redirect('/clubhouse/posts');
+            req.login(user, function(err) {
+                if (err) { return next(err); }
+                return res.redirect('/clubhouse/posts');
+            });
         }
     })
 ]
