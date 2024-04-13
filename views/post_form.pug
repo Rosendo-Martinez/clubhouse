@@ -1,0 +1,22 @@
+extends layoutForAuthenticatedPages 
+
+block content
+
+    h1(class='text-info') Create Post
+
+    form(method="POST")
+
+        div(class="mb-3")
+            label(for="title" class="form-label") Title 
+            input(type="title" class="form-control" id="title" name="title" required placeholder="title of post here" value=(undefined===post ? '' : post.title))
+        
+        div(class="mb-3")
+            label(for="body") Body
+            textarea(class="form-control" rows="6" id="body" name="body" placeholder="The body of you post here..." required) #{undefined===post ? '' : post.body}
+        
+        button(type="submit" class="btn btn-primary my-3") Submit
+    
+    if error_list
+        ul(class="list-group")
+            each error in error_list 
+                li(class="list-group-item list-group-item-warning my-2") #{error.msg}

@@ -176,7 +176,9 @@ exports.posts_create_get = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
-        res.send('Posts create GET not implemented.')
+        res.render('post_form', {
+            title: 'Create Post'
+        })
     })
 ]
 
