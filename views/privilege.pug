@@ -1,0 +1,19 @@
+extends layoutForAuthenticatedPages
+
+block content
+
+    h1(class="text-center") Gain #[strong(class="text-warning") #{privilege==="trust" ? "Trust" : "Admin"}]
+
+    p(class="text-center") Enter the correct password to become #[em #{privilege==="trust" ? "Trusted User" : "Admin"}].
+
+    form(class="d-flex flex-column align-items-center" method="POST")
+
+        div(class="mb-3")
+            input(type="hidden" name="privilege" value=(privilege))
+            input(type="password" class="form-control" id="password" name="password" required placeholder="password here")
+        
+        button(type="submit" class="btn btn-danger my-3") Submit
+    
+    if (error!==undefined)
+        ul(class="list-group my-2")
+            li(class="list-group-item list-group-item-warning") #{error}

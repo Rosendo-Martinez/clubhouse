@@ -26,8 +26,8 @@ router.get('/account', controller.account_get);
 
 router.post('/account', controller.account_post);
 
-router.get('/privalage', controller.privalage_get);
+router.get('/privilege', controller.privilege_get);
 
-router.post('/privalage', controller.privalage_post);
+router.post('/privilege', controller.privilege_post);
 
 module.exports = router;

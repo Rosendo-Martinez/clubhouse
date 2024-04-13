@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const passport = require('../passport-config');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const user = require("../models/user");
 
 async function checkThatUserIsAuthinticated(req, res, next) {
     if (req.user === undefined) {
@@ -283,14 +284,20 @@ exports.account_post = [
     })
 ]
 
-exports.privalage_get = [
+exports.privilege_get = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
-        res.send('Privalage GET not implemented.')
+        if (req.user.isAdmin) {
+            res.redirect('/clubhouse/account');
+        } else {
+            res.render('privilege', {
+                privilege: req.user.isTrusted ? 'admin' : 'trust',
+            });
+        }
     })
 ]
 
-exports.privalage_post = asyncHandler(async (req, res, next) => {
-    res.send('Privalage POST not implemented.')
+exports.privilege_post = asyncHandler(async (req, res, next) => {
+    res.send('Privilege POST not implemented.')
 })
