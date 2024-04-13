@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { DateTime } = require("luxon");
 
 const Schema = mongoose.Schema;
 
@@ -17,5 +18,9 @@ const UserSchema = new Schema({
 UserSchema.virtual('url').get(function() {
     return `/clubhouse/users/${this._id}`;
 });
+
+UserSchema.virtual('join_date_formatted').get(function() {
+    return DateTime.fromJSDate(this.join_date).toLocaleString(DateTime.DATE_MED);
+})
 
 module.exports = mongoose.model("User", UserSchema);

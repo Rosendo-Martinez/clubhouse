@@ -196,7 +196,15 @@ exports.users_detail = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
-        res.send(`Users detail not implemented. User ID: ${req.params.id}`)
+        const otherUser = await User.findById(req.params.id).exec();
+
+        if (!otherUser) {
+            res.redirect('/clubhouse/posts') // Not good way of handling user not found, TODO: fix this
+        } else {
+            res.render('user_details', {
+                otherUser: otherUser
+            });
+        }
     })
 ]
 
