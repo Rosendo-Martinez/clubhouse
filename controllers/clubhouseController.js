@@ -3,8 +3,9 @@ const { body, validationResult } = require("express-validator");
 const passport = require('../passport-config');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const user = require("../models/user");
+const Post = require("../models/post");
 const { Admin, TrustedUser } = require('../classes/Passwords');
+const user = require("../models/user");
 
 async function checkThatUserIsAuthinticated(req, res, next) {
     if (req.user === undefined) {
@@ -182,9 +183,41 @@ exports.posts_create_get = [
     })
 ]
 
-exports.posts_create_post = asyncHandler(async (req, res, next) => {
-    res.send('Posts create POSTS not implemented.')
-})
+exports.posts_create_post = [
+    checkThatUserIsAuthinticated,
+    addLocalsForAuthinticatedViews, // Locals are ONLY USED when the view needs to be rerendered
+    body('title')
+        .trim()
+        .isLength({ min: 2 })
+        .withMessage("Post title must be minimum of 2 characters.")
+        .isLength({ max: 30 })
+        .withMessage("Post title must be maximum of 30 characters."),
+    body('body')
+        .trim()
+        .isLength({ min: 10 })
+        .withMessage("Post body must be minimum of 10 characters.")
+        .isLength({ max: 300 })
+        .withMessage("Post body must be maximum of 300 characters."),
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+
+        const post = new Post({
+            author: req.user._id,
+            title: req.body.title,
+            body: req.body.body,
+        })
+
+        if (!errors.isEmpty()) {
+            res.render('post_form', {
+                post: post,
+                error_list: errors.array()
+            });
+        } else {
+            await post.save();
+            res.redirect(post.url);
+        }
+    })
+]
 
 exports.posts_detail = [
     checkThatUserIsAuthinticated,
