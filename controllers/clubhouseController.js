@@ -177,6 +177,10 @@ exports.posts_create_get = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
+        if (!req.user.canMakePost()) {
+            return res.redirect('/clubhouse/privilege');
+        }
+
         res.render('post_form', {
             title: 'Create Post'
         })
@@ -201,11 +205,11 @@ exports.posts_create_post = [
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
 
-        const post = new Post({
-            author: req.user._id,
-            title: req.body.title,
-            body: req.body.body,
-        })
+        if (!req.user.canMakePost()) {
+            return res.redirect('/clubhouse/privilege');
+        }
+
+        const post = req.user.createPost(req.body.title, req.body.body);
 
         if (!errors.isEmpty()) {
             res.render('post_form', {
