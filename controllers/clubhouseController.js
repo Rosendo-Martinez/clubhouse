@@ -227,7 +227,15 @@ exports.posts_detail = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
-        res.send(`Posts detail not implemented. Post ID: ${req.params.id}`)
+        const post = await Post.findById(req.params.id).populate('author').exec();
+
+        if (!post) {
+            return res.redirect('/clubhouse/posts'); // TODO: find better way to tell user that post was not found
+        }
+
+        res.render('post_details', {
+            post: post
+        })
     })
 ]
 

@@ -1,0 +1,25 @@
+extends layoutForAuthenticatedPages 
+
+block content 
+
+    div(style="max-width: 750px;")
+
+        h1(class="mb-4 text-info")=post.title 
+
+        div(class="d-flex align-items-center mb-2")
+            div(class="rounded-circle d-flex" style=("width: 2rem; height: 2rem;" + "background-color:" + (user.isTrusted ? post.author.iconColor : "bg-light") + ";"))
+                p(class="m-auto") #{user.isTrusted ? post.author.iconCharacters : "?"}
+            p(class="mb-0 ms-2") #{user.isTrusted ? post.author.username : "???"}
+
+        p(class="mb-2") Posted on #[em #{post.post_date_formatted}]
+
+        hr
+
+        p(class="mt-2 lead")=post.body
+
+        if user.isAdmin
+            form(method="POST mt-3")
+
+                input(type="hidden" name="postID" required value=post._id)
+                
+                button(type="submit" class="btn btn-danger my-3") Delete Post
