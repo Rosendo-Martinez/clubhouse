@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { DateTime } = require("luxon");
+const Post = require("./post");
 
 const Schema = mongoose.Schema;
 
@@ -22,5 +23,21 @@ UserSchema.virtual('url').get(function() {
 UserSchema.virtual('join_date_formatted').get(function() {
     return DateTime.fromJSDate(this.join_date).toLocaleString(DateTime.DATE_MED);
 })
+
+UserSchema.methods.canMakePost = function() {
+    return this.isTrusted;
+}
+
+UserSchema.methods.createPost = function(title, body) {
+    if (!this.canMakePost()) {
+        throw new Error("This user is not allowed to make posts.");
+    }
+
+    return new Post({
+        author: this._id,
+        title: title,
+        body: body,
+    });
+}
 
 module.exports = mongoose.model("User", UserSchema);
