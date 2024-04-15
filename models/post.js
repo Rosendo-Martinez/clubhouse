@@ -18,4 +18,14 @@ PostSchema.virtual('post_date_formatted').get(function() {
     return DateTime.fromJSDate(this.post_date).toLocaleString(DateTime.DATE_MED);
 })
 
+PostSchema.methods.getTruncatedBody = function() {
+    const maxCharacters = 40;
+
+    if (this.body.length <= maxCharacters) {
+        return this.body;
+    }
+
+    return this.body.slice(0, maxCharacters) + "...";
+}
+
 module.exports = mongoose.model("Post", PostSchema);
