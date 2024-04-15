@@ -28,6 +28,10 @@ UserSchema.methods.canMakePost = function() {
     return this.isTrusted;
 }
 
+UserSchema.methods.canDeletePosts = function() {
+    return this.isAdmin;
+}
+
 UserSchema.methods.createPost = function(title, body) {
     if (!this.canMakePost()) {
         throw new Error("This user is not allowed to make posts.");

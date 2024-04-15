@@ -243,7 +243,12 @@ exports.posts_detail_post = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
-        // TODO: implement delete post functioninallity
+        if (!req.user.canDeletePosts()) {
+            return res.redirect('/clubhouse/privilege');
+        }
+
+        await Post.deleteOne({ _id: req.body.postID });
+        res.redirect('/clubhouse/posts');
     })
 ]
 
