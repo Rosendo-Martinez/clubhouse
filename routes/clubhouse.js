@@ -18,7 +18,9 @@ router.get('/posts/create', controller.posts_create_get);
 
 router.post('/posts/create', controller.posts_create_post);
 
-router.get('/posts/:id', controller.posts_detail);
+router.get('/posts/:id', controller.posts_detail_get);
+
+router.post('/posts/:id', controller.posts_detail_post)
 
 router.get('/users/:id', controller.users_detail);
 

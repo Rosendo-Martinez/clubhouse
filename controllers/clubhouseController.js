@@ -223,7 +223,7 @@ exports.posts_create_post = [
     })
 ]
 
-exports.posts_detail = [
+exports.posts_detail_get = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
@@ -236,6 +236,14 @@ exports.posts_detail = [
         res.render('post_details', {
             post: post
         })
+    })
+]
+
+exports.posts_detail_post = [
+    checkThatUserIsAuthinticated,
+    addLocalsForAuthinticatedViews,
+    asyncHandler(async (req, res, next) => {
+        // TODO: implement delete post functioninallity
     })
 ]
 
