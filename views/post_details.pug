@@ -18,7 +18,7 @@ block content
         p(class="mt-2 lead")=post.body
 
         if user.isAdmin
-            form(method="POST mt-3")
+            form(method="POST")
 
                 input(type="hidden" name="postID" required value=post._id)
                 
