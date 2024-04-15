@@ -3,3 +3,22 @@ extends layoutForAuthenticatedPages
 block content 
 
     h1 Posts View Not Implemented
+
+    div(class="container p-5")
+        div(class="row gx-5 gy-5")
+            each post in post_list
+                div(class="col-md-6 col-xl-4")
+                    div(class="card border-primary" style="max-width: 18rem; height: 15rem;")
+                        div(class="card-header")
+                            div(class="d-flex align-items-center")
+                                div(class="rounded-circle d-flex" style=("width: 2rem; height: 2rem;" + "background-color:" + (user.isTrusted ? post.author.iconColor : "bg-dark") + ";"))
+                                    p(class="m-auto") #{user.isTrusted ? post.author.iconCharacters : "?"}
+                                p(class="mb-0 ms-2")
+                                    if user.isTrusted 
+                                        a(href=post.author.url class="text-reset text-decoration-none") #{post.author.username}
+                                    else 
+                                        | ???
+                        a(href=post.url class="text-reset text-decoration-none h-100")
+                            div(class="card-body text-primary")
+                                h5(class="card-title") #{post.getTruncatedTitle()}
+                                p(class="card-text") #{post.getTruncatedBody()}

@@ -167,8 +167,10 @@ exports.posts = [
     checkThatUserIsAuthinticated,
     addLocalsForAuthinticatedViews,
     asyncHandler(async (req, res, next) => {
+        const posts = await Post.find().populate('author').sort({ post_date: 1 }).exec();
+
         res.render('posts', {
-            title: 'Posts',
+            post_list: posts
         });
     })
 ]
