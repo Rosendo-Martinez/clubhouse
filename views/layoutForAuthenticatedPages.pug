@@ -26,6 +26,8 @@ html
                 div(class="d-flex")
                     div(class="d-flex align-items-center")
                         p(class="mb-0 me-3")
+                            a(href="/clubhouse/posts" class="icon-link link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover") View Posts
+                        p(class="mb-0 me-3")
                             a(href="/clubhouse/posts/create" class="icon-link link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover") Create Post 
                         if !user.isTrusted || !user.isAdmin
                             p(class="mb-0")
