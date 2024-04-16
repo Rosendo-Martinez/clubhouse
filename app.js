@@ -36,6 +36,7 @@ app.use(session({
   // Must be false during development so that cookies can be set (assuming local dev. server doesn't use HTTP)
   cookie: { secure: (process.env.NODE_ENV === 'production' ? true : false) }
 }));
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 app.use(passport.authenticate('session'));
 
 app.use('/', indexRouter);

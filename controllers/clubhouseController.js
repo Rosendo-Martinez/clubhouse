@@ -8,6 +8,7 @@ const { Admin, TrustedUser } = require('../classes/Passwords');
 const user = require("../models/user");
 
 async function checkThatUserIsAuthinticated(req, res, next) {
+    console.log(`Checking user is auth: user: ${req.user}`)
     if (req.user === undefined) {
         res.redirect('/clubhouse/sign-in');
     } else {
@@ -58,6 +59,7 @@ exports.sign_in_post = (req, res, next) => {
           return next(loginErr); // handle login error
         }
         // Successfully authenticated
+        console.log(user)
         return res.redirect('/clubhouse/posts');
     });
   })(req, res, next); // Note: This is immediately invoked.
