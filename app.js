@@ -33,8 +33,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  // MUST be false during development (else sessions will not work) and true in production
-  cookie: { secure: false }
+  // Must be false during development so that cookies can be set (assuming local dev. server doesn't use HTTP)
+  cookie: { secure: (process.env.NODE_ENV === 'production' ? true : false) }
 }));
 app.use(passport.authenticate('session'));
 
