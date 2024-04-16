@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const MongoStore = require('connect-mongo');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -34,7 +35,12 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   // Must be false during development so that cookies can be set (assuming local dev. server doesn't use HTTP)
-  cookie: { secure: (process.env.NODE_ENV === 'production' ? true : false) }
+  cookie: { secure: (process.env.NODE_ENV === 'production' ? true : false) },
+  store: MongoStore.create({
+    mongoUrl: process.env.CONNECTION_STRING_FOR_SESSIONS,
+  }),
+  ttl: 14 * 24 * 60 * 60, // 14 day expiration date on cookies
+  autoRemove: 'native',
 }));
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 app.use(passport.authenticate('session'));
