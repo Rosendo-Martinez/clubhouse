@@ -18,6 +18,10 @@ PostSchema.virtual('post_date_formatted').get(function() {
     return DateTime.fromJSDate(this.post_date).toLocaleString(DateTime.DATE_MED);
 })
 
+PostSchema.methods.getRelativePostDate = function() {
+    return DateTime.fromJSDate(this.post_date).toRelative();
+}
+
 PostSchema.methods.getTruncatedBody = function() {
     const maxCharacters = 50;
 
