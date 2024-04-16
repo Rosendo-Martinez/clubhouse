@@ -19,7 +19,7 @@ html
 
     div(class="container-fluid flex-grow-1 d-flex flex-column")
         div(class="row")
-            div(class="col-3 border-end border-dark-subtle border-3 d-flex align-items-center")
+            div(class="col-3 border-end border-dark-subtle border-3 d-flex align-items-center d-none d-md-block")
                 p(class="m-0")
                     strong Users 
             div(class="col")
@@ -39,7 +39,7 @@ html
                             p(class="m-auto") #{user.iconCharacters}
 
         div(class="row flex-grow-1")
-            div(class="col-3 border-end border-dark-subtle border-3")
+            div(class="col-3 border-end border-dark-subtle border-3 d-none d-md-block")
                 div(class="list-group")
                     each otherUser in user_list
                         a(class="list-group-item list-group-item-action d-flex align-items-center" href=(otherUser.url))
