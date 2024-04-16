@@ -9,7 +9,11 @@ block content
         div(class="d-flex align-items-center mb-2")
             div(class=("rounded-circle d-flex " + (!user.isTrusted ? "bg-white text-black" : "")) style=("width: 2rem; height: 2rem;" + (user.isTrusted ? "background-color:" + post.author.iconColor + ";" : "")))
                 p(class="m-auto") #{user.isTrusted ? post.author.iconCharacters : "?"}
-            p(class="mb-0 ms-2") #{user.isTrusted ? post.author.username : "???"}
+            p(class="mb-0 ms-2")
+                if user.isTrusted 
+                    a(href=post.author.url class="text-reset text-decoration-none") #{post.author.username}
+                else 
+                    | ???
 
         p(class="mb-2") Posted on #[em #{post.post_date_formatted}]
 
