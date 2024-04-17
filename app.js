@@ -25,6 +25,8 @@ const session = require('express-session');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.set('trust proxy', 1); // Trust the first proxy
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -35,7 +37,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   // Must be false during development so that cookies can be set (assuming local dev. server doesn't use HTTP)
-  cookie: { secure: (process.env.NODE_ENV === 'production' ? true : false) },
+  cookie: { 
+    secure: (process.env.NODE_ENV === 'production' ? true : false),
+    httpOnly: true,
+  },
   store: MongoStore.create({
     mongoUrl: process.env.CONNECTION_STRING_FOR_SESSIONS,
   }),
