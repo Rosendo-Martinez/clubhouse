@@ -9,6 +9,8 @@ What is this project? Its a twitter clone with a clubhouse theme. Its also a ful
 - ExpressJS
 - NodeJS
 - PassportJS
+- Mongoose
+- MongoDB
 - Heroku
 - Bootstrap
 - HTML/CSS
